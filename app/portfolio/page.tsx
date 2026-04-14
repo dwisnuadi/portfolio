@@ -1,11 +1,20 @@
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 
 async function getProjects() {
-  const res = await fetch("http://localhost:3001/projects", {
-    cache: "no-store",
-  });
+  try {
+    const res = await fetch("http://localhost:3001/projects", {
+      cache: "no-store",
+    });
 
-  return res.json();
+    if (!res.ok) {
+      throw new Error("Failed to fetch");
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error("FETCH ERROR:", error);
+    return [];
+  }
 }
 
 export default async function Portfolio() {
