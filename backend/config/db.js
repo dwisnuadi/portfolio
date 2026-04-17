@@ -3,12 +3,14 @@ import knex from "knex";
 const db = knex({
   client: "mysql2",
   connection: {
-    localhost : "http://localhost:3001",
-    host: "127.0.0.1",
-    user: "root",
-    password: "",
-    database: "portfolio_db",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: {
+      rejectUnauthorized: true,
+    },
   },
 });
 
-export default db;  
+export default db;
