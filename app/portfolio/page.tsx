@@ -1,20 +1,41 @@
+import { getConnection } from "@/app/lib/db";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 
 async function getProjects() {
-  try {
-    const res = await fetch("http://localhost:3001/projects", {
-      cache: "no-store",
-    });
+  const db = await getConnection();
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch");
+  const [rows]: any = await db.execute(`
+    SELECT 
+      p.id,
+      p.title,
+      p.description,
+      p.github_link,
+      p.vercel_link,
+      l.name as library
+    FROM projects p
+    LEFT JOIN libraries l ON p.id = l.project_id
+  `);
+
+  const map = new Map();
+
+  rows.forEach((row: any) => {
+    if (!map.has(row.id)) {
+      map.set(row.id, {
+        id: row.id,
+        title: row.title,
+        description: row.description,
+        github_link: row.github_link,
+        vercel_link: row.vercel_link,
+        libraries: [],
+      });
     }
 
-    return res.json();
-  } catch (error) {
-    console.error("FETCH ERROR:", error);
-    return [];
-  }
+    if (row.library) {
+      map.get(row.id).libraries.push(row.library);
+    }
+  });
+
+  return Array.from(map.values());
 }
 
 export default async function Portfolio() {
@@ -30,49 +51,31 @@ export default async function Portfolio() {
           {projects.map((item: any) => (
             <div
               key={item.id}
-              className="bg-[#132a52] border border-gray-700 rounded-xl p-6 hover:scale-[1.02] transition"
+              className="bg-[#132a52] border border-gray-700 rounded-xl p-6"
             >
-              {/* TITLE */}
               <h2 className="text-2xl font-semibold mb-3">
                 {item.title}
               </h2>
 
-              {/* DESC */}
               <p className="text-gray-400 mb-4">
                 {item.description}
               </p>
 
-              {/* LIBRARIES */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {item.libraries?.map((lib: string, i: number) => (
-                  <span
-                    key={i}
-                    className="bg-gray-700 text-sm px-3 py-1 rounded-md"
-                  >
+                  <span key={i} className="bg-gray-700 text-sm px-3 py-1 rounded-md">
                     {lib}
                   </span>
                 ))}
               </div>
 
-              {/* BUTTON */}
               <div className="flex gap-6 text-gray-300">
-
-                <a
-                  href={item.github_link}
-                  target="_blank"
-                  className="flex items-center gap-2 hover:text-yellow-400"
-                >
+                <a href={item.github_link} target="_blank">
                   <FaGithub /> Code
                 </a>
-
-                <a
-                  href={item.vercel_link}
-                  target="_blank"
-                  className="flex items-center gap-2 hover:text-yellow-400"
-                >
+                <a href={item.vercel_link} target="_blank">
                   <FaExternalLinkAlt /> Live Demo
                 </a>
-
               </div>
             </div>
           ))}
