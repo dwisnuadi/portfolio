@@ -1,31 +1,22 @@
 import "server-only";
 import mysql from "mysql2/promise";
 
-export async function getConnection() {
-  try {
-    console.log("TEST ENV RAW:", process.env);
-    console.log("ENV CHECK:", {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  pass: process.env.DB_PASS,
-  db: process.env.DB_NAME,
-});
-    const connection = await mysql.createConnection({
+let pool: mysql.Pool;
+
+export function getConnection() {
+  if (!pool) {
+    console.log("INIT DB POOL");
+
+    pool = mysql.createPool({
       host: process.env.DB_HOST,
       user: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
     });
+  }
 
-    return connection;
-  } 
-catch (error: any) {
-  console.error("DB ERROR FULL:", {
-    message: error.message,
-    code: error.code,
-    errno: error.errno,
-    sqlState: error.sqlState,
-  });
-
-  throw new Error("Database connection failed");
-}}
+  return pool;
+}
