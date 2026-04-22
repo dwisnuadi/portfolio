@@ -43,8 +43,13 @@ export default function Contact() {
 
         {/* SOCIAL */}
         <div className="flex justify-center gap-6 text-2xl mb-10">
-          <FaLinkedin className="hover:text-yellow-400 hover:scale-110 transition cursor-pointer" />
-          <FaGithub className="hover:text-yellow-400 hover:scale-110 transition cursor-pointer" />
+        <a href="https://www.linkedin.com/in/dwisnu-adi/" target="_blank">
+        <FaLinkedin className="hover:text-yellow-400 hover:scale-110 transition cursor-pointer" />
+        </a>
+
+        <a href="https://github.com/dwisnuadi" target="_blank">
+        <FaGithub className="hover:text-yellow-400 hover:scale-110 transition cursor-pointer" />
+        </a>
         </div>
 
         {/* FORM */}
