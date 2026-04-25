@@ -1,22 +1,6 @@
 import "server-only";
-import mysql from "mysql2/promise";
+import { neon } from "@neondatabase/serverless";
 
-let pool: mysql.Pool;
+const sql = neon(process.env.DATABASE_URL!);
 
-export function getConnection() {
-  if (!pool) {
-    console.log("INIT DB POOL");
-
-    pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
-      waitForConnections: true,
-      connectionLimit: 10,
-      queueLimit: 0,
-    });
-  }
-
-  return pool;
-}
+export default sql;

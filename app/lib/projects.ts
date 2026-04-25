@@ -1,4 +1,4 @@
-import { getConnection } from "./db";
+import sql from "./db";
 
 export type Project = {
   id: number;
@@ -10,9 +10,7 @@ export type Project = {
 };
 
 export async function getProjects(): Promise<Project[]> {
-  const db = await getConnection();
-
-  const [rows]: any = await db.execute(`
+  const rows = await sql`
     SELECT 
       p.id,
       p.title,
@@ -22,7 +20,7 @@ export async function getProjects(): Promise<Project[]> {
       l.name as library
     FROM projects p
     LEFT JOIN libraries l ON p.id = l.project_id
-  `);
+  `;
 
   const map = new Map<number, Project>();
 

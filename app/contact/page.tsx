@@ -5,7 +5,7 @@ import { FaWhatsapp, FaLinkedin, FaGithub } from "react-icons/fa";
 
 export default function Contact() {
   const phone = "6281234567890";
-
+  
   return (
     <main className="min-h-screen bg-[#4e969b] text-white px-6 py-20">
       <div className="max-w-2xl mx-auto text-center">
