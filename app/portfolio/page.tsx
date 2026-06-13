@@ -6,6 +6,7 @@ export default async function Portfolio() {
 
   try {
     projects = await getProjects();
+    console.log("DATABASE_URL:", process.env.DATABASE_URL);
   } catch (error) {
     console.error("PAGE ERROR:", error);
   }
@@ -17,7 +18,7 @@ export default async function Portfolio() {
         <h1 className="text-3xl font-bold mb-10">Projects</h1>
 
         {projects.length === 0 ? (
-          <p className="text-gray-300">No projects found.</p>
+          <p className="text-gray-300"></p>
         ) : (
           <div className="space-y-8">
             {projects.map((item) => (
