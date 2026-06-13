@@ -1,14 +1,12 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import { getConnection } from "@/app/lib/db";
+import sql from "@/app/lib/db";
 
 export async function GET() {
   try {
-    const db = await getConnection();
-
-    const [rows]: any = await db.execute(`
-      SELECT 
+    const rows = await sql`
+      SELECT
         p.id,
         p.title,
         p.description,
@@ -17,7 +15,7 @@ export async function GET() {
         l.name as library
       FROM projects p
       LEFT JOIN libraries l ON p.id = l.project_id
-    `);
+    `;
 
     const map = new Map();
 
@@ -39,9 +37,12 @@ export async function GET() {
     });
 
     return NextResponse.json(Array.from(map.values()));
-
   } catch (err: any) {
     console.error(err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+
+    return NextResponse.json(
+      { error: err.message },
+      { status: 500 }
+    );
   }
 }
